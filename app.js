@@ -7,7 +7,7 @@ var parser = new xml2js.Parser();
   busID = 83055;
 
   // Intitate
-  console.log('\033[2J'); // CLear em
+  console.log('\033[2J'); // Clear em
   getBuses(busID);
 
 setInterval(function() {
