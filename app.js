@@ -3,18 +3,17 @@ var xml2js = require("xml2js");
 var clc = require('cli-color');
 var parser = new xml2js.Parser();
 
-  interval = 10000, // 10 minutes
+  interval = 10000, // 10 minutes (ITS UNDER DEV, RELAX FFS!!!)
   busID = 83055;
 
   // Intitate
+  console.log('\033[2J'); // CLear em
   getBuses(busID);
 
 setInterval(function() {
 
-  console.log('\033[2J');
-
   getBuses(busID);
-  
+
 }, interval);
 
 function getBuses(id){
@@ -41,6 +40,8 @@ function getBuses(id){
             bus_1.push(lines[i]);
           }      
         }
+
+        console.log('\033[2J'); // Clear em
 
         console.log("[-> " + bus_0[0].Towards + "]: "+ bus_0[0].JourneyDateTime);
         console.log("[-> " + bus_1[0].Towards + "]: "+ bus_1[0].JourneyDateTime);
