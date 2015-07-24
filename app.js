@@ -3,8 +3,15 @@ var xml2js = require("xml2js");
 var clc = require('cli-color');
 var parser = new xml2js.Parser();
 
-function getBuses(){
-  http.get("http://www.labs.skanetrafiken.se/v2.2/stationresults.asp?selPointFrKey=83055", function(res) {
+  interval = 600000, // 10 minutes
+  busID = 83055;
+
+setInterval(function() {
+  getBuses(busID);
+}, interval);
+
+function getBuses(id){
+  http.get("http://www.labs.skanetrafiken.se/v2.2/stationresults.asp?selPointFrKey=" + id, function(res) {
 
     var buffer = "";
     var lines = [];
@@ -39,5 +46,3 @@ function getBuses(){
     console.log("Got error: " + e.message);
   });
 }
-
-getBuses();
