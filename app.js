@@ -3,11 +3,19 @@ var xml2js = require("xml2js");
 var clc = require('cli-color');
 var parser = new xml2js.Parser();
 
-  interval = 600000, // 10 minutes
+  interval = 10000, // 10 minutes
   busID = 83055;
 
-setInterval(function() {
+  // Intitate
   getBuses(busID);
+
+setInterval(function() {
+
+  process.stdout.clearLine();  // clear current text
+  process.stdout.cursorTo(0);
+
+  getBuses(busID);
+  
 }, interval);
 
 function getBuses(id){
