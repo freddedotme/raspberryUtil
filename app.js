@@ -11,8 +11,7 @@ var parser = new xml2js.Parser();
 
 setInterval(function() {
 
-  process.stdout.clearLine();  // clear current text
-  process.stdout.cursorTo(0);
+  console.log('\033[2J');
 
   getBuses(busID);
   
