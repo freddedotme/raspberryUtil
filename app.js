@@ -38,8 +38,6 @@ function getBuses(stopIDs){
   var deferred = Q.defer(),
       completedRequests = 0;
 
-  messages.length = 0;
-
   messages.push(clc.bold("Busstider"));
   messages.push("");
 
@@ -190,6 +188,36 @@ function getWeather(latLonS){
     return deferred.promise;
 
   };
+}
+
+function getCurrency(){
+
+  messages.push(clc.bold("Valuta"));
+  messages.push("");
+
+  http.get("http://api.fixer.io/latest?base=USD", function(res) {
+
+    var buffer = "";
+
+    res.on("data", function (chunk) {
+      buffer += chunk; 
+    });
+    
+    res.on("end", function (e) {
+      
+      var currency = JSON.parse(buffer);
+      var rates = currency.rates;
+
+      messages.push("  1 x USD = " + rates.SEK + " SEK");
+      messages.push("  1 x USD = " + rates.GBP + " GBP");
+      messages.push("");
+
+    });
+
+  }).on("error", function(e) {
+    console.log("Got error: " + e.message);
+  });
+
 }
 
 function printMessage(){
