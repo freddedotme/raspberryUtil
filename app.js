@@ -3,7 +3,7 @@ var xml2js = require("xml2js");
 var clc = require('cli-color');
 var parser = new xml2js.Parser();
 
-  var interval = 15000; // 10 minutes (ITS UNDER DEV, RELAX FFS!!!)
+  var interval = 15000; // 10 minutes (ITS UNDER DEV, RELAX!!!)
   var busID_0 = 83055;
   var busID_1 = 83054;
 
