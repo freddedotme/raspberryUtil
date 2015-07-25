@@ -17,19 +17,19 @@ var messages = [];
 
 function pull() {
 
-  // Reset messages
-  messages = [];
+// Reset messages
+messages = [];
 
-  console.log('\033[2J');
-  getBuses([busID_0, busID_1]).then(function() {
-    return getWeather(weatherCoords);
-  }).then(function() {
-    return getCurrency(currencyBases);
-  }).catch(function() {
-    console.log('An error occurred!');
-  }).done(function() {
-    printMessages();
-  });
+console.log('\033[2J');
+getBuses([busID_0, busID_1]).then(function() {
+  return getWeather(weatherCoords);
+}).then(function() {
+  return getCurrency(currencyBases);
+}).catch(function() {
+  console.log('An error occurred!');
+}).done(function() {
+  printMessages();
+});
 }
 
 // Intitate
@@ -41,7 +41,7 @@ setInterval(pull, interval);
 function getBuses(stopIDs){
 
   var deferred = Q.defer(),
-      completedRequests = 0;
+  completedRequests = 0;
 
   messages.push(clc.bold("Busstider"));
   messages.push("");
@@ -60,9 +60,9 @@ function getBuses(stopIDs){
       res.on("data", function (chunk) {
         buffer += chunk; 
       });
-      
+
       res.on("end", function (e) {
-        
+
         parser.parseString(buffer, function (e, result) {
           lines = result["soap:Envelope"]["soap:Body"][0]["GetDepartureArrivalResponse"][0]["GetDepartureArrivalResult"][0]["Lines"][0]["Line"];
           station = result["soap:Envelope"]["soap:Body"][0]["GetDepartureArrivalResponse"][0]["GetDepartureArrivalResult"][0]["StopAreaData"][0]["Name"][0];
@@ -107,10 +107,10 @@ function getBuses(stopIDs){
 function getWeather(latLonS){
 
   var deferred = Q.defer(),
-      completedRequests = 0;
+  completedRequests = 0;
 
   for (var latLonCounter = 0; latLonCounter < latLonS.length; latLonCounter++) {
-    latLon = latLonS[latLonCounter];
+    var latLon = latLonS[latLonCounter];
 
     http.get("http://opendata-download-metfcst.smhi.se/api/category/pmp1.5g/version/1/geopoint/lat/" + latLon.lat + "/lon/" + latLon.lon + "/data.json", function(res) {
 
@@ -122,7 +122,7 @@ function getWeather(latLonS){
       res.on("data", function (chunk) {
         buffer += chunk; 
       });
-      
+
       res.on("end", function (e) {
 
         var today = new Date();
@@ -141,7 +141,7 @@ function getWeather(latLonS){
             if(hours == 0){
               hours = 24;
             }
-            
+
             if(i == 0){
               msg_c += "  | " + hours + ":" + temp.getMinutes() + " | ";
               msg_t += "  | ";
@@ -150,7 +150,7 @@ function getWeather(latLonS){
             }else{
               msg_c += hours + ":" + temp.getMinutes() + " | ";
             }
-            
+
             if(days[i].t > 20){
               msg_t += clc.red(days[i].t.toFixed(1));
             } else if(days[i].t > 15){
@@ -188,21 +188,22 @@ function getWeather(latLonS){
       deferred.reject();
     });
 
-    return deferred.promise;
-
   };
+
+  return deferred.promise;
+
 }
 
 function getCurrency(bases) {
 
   var deferred = Q.defer(),
-      completedRequests = 0;
+  completedRequests = 0;
 
   messages.push(clc.bold("Valuta"));
   messages.push("");
 
   for (var baseCounter = 0; baseCounter < bases.length; baseCounter++) {
-    base = bases[baseCounter];
+    var base = bases[baseCounter];
 
     http.get("http://api.fixer.io/latest?base=" + base, function(res) {
 
@@ -211,9 +212,9 @@ function getCurrency(bases) {
       res.on("data", function (chunk) {
         buffer += chunk; 
       });
-      
+
       res.on("end", function (e) {
-        
+
         var currency = JSON.parse(buffer);
         var rates = currency.rates;
 
@@ -245,5 +246,5 @@ function printMessages(){
   for(var i = 0; i < messages.length; i++){
     console.log(messages[i]);
   }
-  
+
 }
