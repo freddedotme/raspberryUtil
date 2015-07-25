@@ -13,18 +13,20 @@ var parser = new xml2js.Parser();
   console.log('\033[2J');
   getBuses(busID_0, busID_1);
   getWeather();
+  getCurrency();
 
 setInterval(function() {
 
   console.log('\033[2J');
+  messages.length = 0;
+
   getBuses(busID_0, busID_1);
   getWeather();
+  getCurrency();
 
 }, interval);
 
 function getBuses(id0, id1){
-
-  messages.length = 0;
 
   messages.push(clc.bold("Busstider"));
   messages.push("");
@@ -186,6 +188,36 @@ function getWeather(){
   }).on("error", function(e) {
     console.log("Got error: " + e.message);
   });
+}
+
+function getCurrency(){
+
+  messages.push(clc.bold("Valuta"));
+  messages.push("");
+
+  http.get("http://api.fixer.io/latest?base=USD", function(res) {
+
+    var buffer = "";
+
+    res.on("data", function (chunk) {
+      buffer += chunk; 
+    });
+    
+    res.on("end", function (e) {
+      
+      var currency = JSON.parse(buffer);
+      var rates = currency.rates;
+
+      messages.push("  1 x USD = " + rates.SEK + " SEK");
+      messages.push("  1 x USD = " + rates.GBP + " GBP");
+      messages.push("");
+
+    });
+
+  }).on("error", function(e) {
+    console.log("Got error: " + e.message);
+  });
+
 }
 
 function printMessage(){
