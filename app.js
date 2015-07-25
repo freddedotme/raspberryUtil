@@ -4,34 +4,39 @@ var http = require("http"),
     parser = new xml2js.Parser(),
     Q = require('q');
 
-  var interval = 15000, // 10 minutes (ITS UNDER DEV, RELAX FFS!!!)
-      busID_0 = 83055,
-      busID_1 = 83054,
-      weatherCoords = [{
-        lat: '56.046467',
-        lon: '12.694512'
-      }];
+var interval = 15000, // 10 minutes (ITS UNDER DEV, RELAX FFS!!!)
+    busID_0 = 83055,
+    busID_1 = 83054,
+    weatherCoords = [{
+      lat: '56.046467',
+      lon: '12.694512'
+    }],
+    currencyBases = ['USD'];
 
-  var messages = [];
+var messages = [];
 
-  // Intitate
-  console.log('\033[2J');
-  getBuses([busID_0, busID_1]).then(function() {
-    return getWeather(weatherCoords);
-  }).catch(function() {
-    console.log('An error occurred!');
-  }).done();
+function pull() {
 
-setInterval(function() {
+  // Reset messages
+  messages = [];
 
   console.log('\033[2J');
   getBuses([busID_0, busID_1]).then(function() {
     return getWeather(weatherCoords);
+  }).then(function() {
+    return getCurrency(currencyBases);
   }).catch(function() {
     console.log('An error occurred!');
-  }).done();
+  }).done(function() {
+    printMessages();
+  });
+}
 
-}, interval);
+// Intitate
+
+pull();
+
+setInterval(pull, interval);
 
 function getBuses(stopIDs){
 
@@ -170,8 +175,6 @@ function getWeather(latLonS){
         messages.push(msg_t);
         messages.push("");
 
-        printMessage();
-
         completedRequests++;
 
         if (completedRequests == latLonS.length) {
@@ -190,37 +193,54 @@ function getWeather(latLonS){
   };
 }
 
-function getCurrency(){
+function getCurrency(bases) {
+
+  var deferred = Q.defer(),
+      completedRequests = 0;
 
   messages.push(clc.bold("Valuta"));
   messages.push("");
 
-  http.get("http://api.fixer.io/latest?base=USD", function(res) {
+  for (var baseCounter = 0; baseCounter < bases.length; baseCounter++) {
+    base = bases[baseCounter];
 
-    var buffer = "";
+    http.get("http://api.fixer.io/latest?base=" + base, function(res) {
 
-    res.on("data", function (chunk) {
-      buffer += chunk; 
-    });
-    
-    res.on("end", function (e) {
+      var buffer = "";
+
+      res.on("data", function (chunk) {
+        buffer += chunk; 
+      });
       
-      var currency = JSON.parse(buffer);
-      var rates = currency.rates;
+      res.on("end", function (e) {
+        
+        var currency = JSON.parse(buffer);
+        var rates = currency.rates;
 
-      messages.push("  1 x USD = " + rates.SEK + " SEK");
-      messages.push("  1 x USD = " + rates.GBP + " GBP");
-      messages.push("");
+        messages.push("  1 x " + base + " = " + rates.SEK + " SEK");
+        messages.push("  1 x " + base + " = " + rates.GBP + " GBP");
+        messages.push("");
 
+        completedRequests++;
+
+        if (completedRequests == bases.length) {
+          deferred.resolve();
+        };
+
+      });
+
+    }).on("error", function(e) {
+      console.log("Got error: " + e.message);
+      deferred.reject();
     });
 
-  }).on("error", function(e) {
-    console.log("Got error: " + e.message);
-  });
+  };
+
+  return deferred.promise;
 
 }
 
-function printMessage(){
+function printMessages(){
 
   for(var i = 0; i < messages.length; i++){
     console.log(messages[i]);
