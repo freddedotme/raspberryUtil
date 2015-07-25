@@ -18,7 +18,7 @@
   "homepage": "https://github.com/freddtastic/raspberryUtil#readme",
   "dependencies": {
     "cli-color": "^1.0.0",
-    "http": "0.0.0",
+    "q": "^1.4.1",
     "xml2js": "^0.4.9"
   }
 }
