@@ -63,8 +63,6 @@ function getBuses(id0, id1){
         messages.push("  [-> " + bus_1[0].Towards + "]: " + date_1.getHours() + ":" + date_1.getMinutes());
         messages.push("");
 
-        done = true;
-
       });
 
     });
@@ -166,7 +164,7 @@ function getWeather(){
             msg_t += clc.yellow(days[i].t.toFixed(1));
           } else if(days[i].t > 0){
             msg_t += clc.cyan(days[i].t.toFixed(1));
-          } else if(days[i].t < 0){
+          } else if(days[i].t <= 0){
             msg_t += clc.blue(days[i].t.toFixed(1));
           }
 
