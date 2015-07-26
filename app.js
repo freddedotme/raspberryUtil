@@ -2,7 +2,8 @@ var http = require("http"),
     xml2js = require("xml2js"),
     clc = require('cli-color'),
     parser = new xml2js.Parser(),
-    Q = require('q');
+    Q = require('q'),
+    week = require("current-week-number");
 
 var interval = 15000, // 10 minutes (ITS UNDER DEV, RELAX FFS!!!)
     busID_0 = 83055,
@@ -11,7 +12,9 @@ var interval = 15000, // 10 minutes (ITS UNDER DEV, RELAX FFS!!!)
       lat: '56.046467',
       lon: '12.694512'
     }],
-    currencyBases = ['USD'];
+    currencyBases = ['USD'],
+    loader = false,
+    today = new Date();
 
 var messages = [];
 
@@ -20,14 +23,19 @@ function pull() {
 // Reset messages
 messages = [];
 
-console.log('\033[2J');
 getBuses([busID_0, busID_1]).then(function() {
+  console.log("Loaded buses!");
   return getWeather(weatherCoords);
 }).then(function() {
+  console.log("Loaded weather!");
   return getCurrency(currencyBases);
 }).catch(function() {
   console.log('An error occurred!');
 }).done(function() {
+  console.log("Loaded currency!");
+  console.log('\033[2J');
+  console.log(clc.bold("Tid: ") + today.getHours() + ":" + today.getMinutes() + " / Vecka: " + week());
+  console.log("");
   printMessages();
 });
 }
@@ -125,8 +133,8 @@ function getWeather(latLonS){
 
       res.on("end", function (e) {
 
-        var today = new Date();
         var weather = JSON.parse(buffer);
+        var x = 0;
 
         days = weather.timeseries;
 
@@ -136,36 +144,42 @@ function getWeather(latLonS){
 
           if(today.getDay() == temp.getDay()){
 
-            var hours = temp.getHours();
+              var hours = temp.getHours();
 
-            if(hours == 0){
-              hours = 24;
+              if(hours == 0 || hours == 2){
+                hours = 24;
+              }
+
+              if(today.getHours() <= hours){             
+
+                if(x == 0){
+                  msg_c += "  | " + clc.underline(hours) + ":" + clc.underline(temp.getMinutes()) + " | ";
+                  msg_t += "  | ";
+                }else if(i == days.length -1){
+                  msg_c += hours + ":" + temp.getMinutes() + " |";
+                }else{
+                  msg_c += hours + ":" + temp.getMinutes() + " | ";
+                }
+
+                if(days[i].t > 20){
+                  msg_t += clc.red(days[i].t.toFixed(1));
+                } else if(days[i].t > 15){
+                  msg_t += clc.green(days[i].t.toFixed(1));
+                } else if(days[i].t > 10){
+                  msg_t += clc.yellow(days[i].t.toFixed(1));
+                } else if(days[i].t > 0){
+                  msg_t += clc.cyan(days[i].t.toFixed(1));
+                } else if(days[i].t <= 0){
+                  msg_t += clc.blue(days[i].t.toFixed(1));
+                }
+
+                msg_t += " | ";
+
+                x++;
+
+              }
+
             }
-
-            if(i == 0){
-              msg_c += "  | " + hours + ":" + temp.getMinutes() + " | ";
-              msg_t += "  | ";
-            }else if(i == days.length -1){
-              msg_c += hours + ":" + temp.getMinutes() + " |";
-            }else{
-              msg_c += hours + ":" + temp.getMinutes() + " | ";
-            }
-
-            if(days[i].t > 20){
-              msg_t += clc.red(days[i].t.toFixed(1));
-            } else if(days[i].t > 15){
-              msg_t += clc.green(days[i].t.toFixed(1));
-            } else if(days[i].t > 10){
-              msg_t += clc.yellow(days[i].t.toFixed(1));
-            } else if(days[i].t > 0){
-              msg_t += clc.cyan(days[i].t.toFixed(1));
-            } else if(days[i].t <= 0){
-              msg_t += clc.blue(days[i].t.toFixed(1));
-            }
-
-            msg_t += " | ";
-
-          }
 
         }
 
@@ -238,6 +252,26 @@ function getCurrency(bases) {
   };
 
   return deferred.promise;
+
+}
+
+function viewSpinner(state){
+
+  loader = state;
+
+  if(loader){
+
+    for(var i = 0; i < 2; i++){
+
+      console.log("loading");
+
+      if(i == 1){
+        i = 0;
+      }
+
+    }
+
+  }
 
 }
 
