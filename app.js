@@ -84,8 +84,9 @@
       console.log(clc.green("------------------------------------------------------------"));
 
       // Body
-      console.log("  [Buss -> " + Data["BusData"]["bus_0_station"]  + "]: " + Data["BusData"]["bus_0_t"]);
-      console.log("  [Buss -> " + Data["BusData"]["bus_1_station"]  + "]: " + Data["BusData"]["bus_1_t"]);
+      console.log("  [Buss -> " + Data["BusData"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData"]["bus_0_t"]));
+      console.log("  [Buss -> " + Data["BusData"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData"]["bus_1_t"]));
+      console.log("  " + clc.yellow("-"));
 
       // Footer
       console.log(clc.green("------------------------------------------------------------"));
