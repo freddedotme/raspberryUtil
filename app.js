@@ -34,7 +34,7 @@
     messages.DONE = "Klart!";
     messages.ERROR = "Ops! Något blev fel!"
     messages.CLEARSCREEN = "\033[2J"; // Tested on Debian
-    messages.TIMESTAMP = clc.bold("Tid: ") + today.getHours() + ":" + today.getMinutes() + " | V: " + week();
+    messages.TIMESTAMP = clc.bold("Tid: ") + clc.magenta(today.getHours()) + ":" + clc.magenta(today.getMinutes()) + " | V: " + clc.magenta(week());
     messages.TAB = "\t\t";
 
 // ---------------------------
@@ -84,7 +84,8 @@
       console.log(clc.green("------------------------------------------------------------"));
 
       // Body
-      console.log("");
+      console.log("  [Buss -> " + Data["BusData"]["bus_0_station"]  + "]: " + Data["BusData"]["bus_0_t"]);
+      console.log("  [Buss -> " + Data["BusData"]["bus_1_station"]  + "]: " + Data["BusData"]["bus_1_t"]);
 
       // Footer
       console.log(clc.green("------------------------------------------------------------"));
@@ -155,8 +156,8 @@
             Bus.bus_1_line = bus_1;
             Bus.bus_0_station = bus_0[0].Towards[0];
             Bus.bus_1_station = bus_1[0].Towards[0];
-            Bus.bus_0_msg = "[-> " + bus_0[0].Towards + "]: " + date_0.getUTCHours() + ":" + date_0.getUTCMinutes();
-            Bus.bus_1_msg = "[-> " + bus_1[0].Towards + "]: " + date_1.getUTCHours() + ":" + date_1.getUTCMinutes();
+            Bus.bus_0_t = date_0.getUTCHours() + ":" + date_0.getUTCMinutes();
+            Bus.bus_1_t = date_1.getUTCHours() + ":" + date_1.getUTCMinutes();
 
             // Finally store it!
             Data["BusData"] = Bus;
