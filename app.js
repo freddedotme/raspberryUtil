@@ -80,7 +80,7 @@
       console.log(messages.CLEARSCREEN);
       console.log(messages.TIMESTAMP + messages.TAB + clc.bold("Väder: ") + clc.magenta(Data["WeatherData"]["today"][0]["t"]) + " °C | " + clc.magenta(Data["WeatherData"]["today"][0]["ws"]) + " m/s");
 
-      if(t_diffSecs == 0){ console.log("[Uppdatering -> " + t_diffMins + "]"); }
+      if(t_diffSecs == 0){ console.log("[Uppdatering -> " + t_diffMins + ":00]"); }
       else if(t_diffSecs < 10){ console.log("[Uppdatering -> " + t_diffMins + ":0" + t_diffSecs + "]"); }
       else{ console.log("[Uppdatering -> " + t_diffMins + ":" + t_diffSecs + "]"); }
 
