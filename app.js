@@ -5,7 +5,7 @@ var http = require("http"),
     Q = require('q'),
     week = require("current-week-number");
 
-var interval = 15000, // 10 minutes (ITS UNDER DEV, RELAX FFS!!!)
+var interval = 15000, // 10 minutes (ITS UNDER DEV!!!)
     busID_0 = 83055,
     busID_1 = 83054,
     weatherCoords = [{
@@ -24,15 +24,15 @@ function pull() {
 messages = [];
 
 getBuses([busID_0, busID_1]).then(function() {
-  console.log("Loaded buses!");
+  console.log("Laddar busstider!");
   return getWeather(weatherCoords);
 }).then(function() {
-  console.log("Loaded weather!");
+  console.log("Laddar väder!");
   return getCurrency(currencyBases);
 }).catch(function() {
   console.log('An error occurred!');
 }).done(function() {
-  console.log("Loaded currency!");
+  console.log("Laddar valuta!");
   console.log('\033[2J');
   console.log(clc.bold("Tid: ") + today.getHours() + ":" + today.getMinutes() + " / Vecka: " + week());
   console.log("");
@@ -126,6 +126,7 @@ function getWeather(latLonS){
       var buffer = "";
       var msg_c = "";
       var msg_t = "";
+      var msg_r = "";
 
       res.on("data", function (chunk) {
         buffer += chunk; 
@@ -155,6 +156,7 @@ function getWeather(latLonS){
                 if(x == 0){
                   msg_c += "  | " + clc.underline(hours) + ":" + clc.underline(temp.getMinutes()) + " | ";
                   msg_t += "  | ";
+                  msg_r += "  | ";
                 }else if(i == days.length -1){
                   msg_c += hours + ":" + temp.getMinutes() + " |";
                 }else{
@@ -173,7 +175,10 @@ function getWeather(latLonS){
                   msg_t += clc.blue(days[i].t.toFixed(1));
                 }
 
+                msg_r += days[i].pit.toFixed(2);
+
                 msg_t += " | ";
+                msg_r += " | ";
 
                 x++;
 
@@ -187,6 +192,7 @@ function getWeather(latLonS){
         messages.push("");
         messages.push(msg_c);
         messages.push(msg_t);
+        messages.push(msg_r);
         messages.push("");
 
         completedRequests++;
@@ -232,9 +238,9 @@ function getCurrency(bases) {
         var currency = JSON.parse(buffer);
         var rates = currency.rates;
 
-        messages.push("  1 x " + base + " = " + rates.SEK + " SEK");
-        messages.push("  1 x " + base + " = " + rates.GBP + " GBP");
-        messages.push("");
+        //messages.push("  1 x " + base + " = " + rates.SEK + " SEK");
+        //messages.push("  1 x " + base + " = " + rates.GBP + " GBP");
+        //messages.push("");
 
         completedRequests++;
 
