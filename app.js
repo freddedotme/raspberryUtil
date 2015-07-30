@@ -5,7 +5,7 @@ var http = require("http"),
     Q = require('q'),
     week = require("current-week-number");
 
-var interval = 600000, // 10 minutes (ITS UNDER DEV!!!)
+var interval = 650000, // 10 minutes (ITS UNDER DEV!!!)
     busID_0 = 83055,
     busID_1 = 83054,
     weatherCoords = [{
