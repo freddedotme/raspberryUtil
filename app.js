@@ -51,7 +51,7 @@ function getBuses(stopIDs){
   var deferred = Q.defer(),
   completedRequests = 0;
 
-  messages.push(clc.bold("Busstider"));
+  messages.push(clc.bold("Busstider \t Väder"));
   messages.push("");
 
   for (var stopCounter = 0; stopCounter < stopIDs.length; stopCounter++) {
