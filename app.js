@@ -34,7 +34,6 @@
     messages.DONE = "Klart!";
     messages.ERROR = "Ops! Något blev fel!"
     messages.CLEARSCREEN = "\033[2J"; // Tested on Debian
-    messages.TIMESTAMP = clc.bold("Tid: ") + clc.magenta(today.getHours()) + ":" + clc.magenta(today.getMinutes()) + " | V: " + clc.magenta(week());
     messages.TAB = "\t\t";
 
 // ---------------------------
@@ -69,6 +68,7 @@
   function printData() {
 
     var T = new Date();
+    today = new Date();
 
     var t_diffMs = (Math.abs(T-t_next) / 1000);
     var t_diffMins = Math.floor(t_diffMs / 60) % 60;
@@ -80,7 +80,13 @@
       console.log(messages.CLEARSCREEN);
 
       // Header
-      console.log(messages.TIMESTAMP + messages.TAB + clc.bold("Väder: ") + clc.magenta(Data["WeatherData"]["today"][0]["t"]) + " °C | " + clc.magenta(Data["WeatherData"]["today"][0]["ws"]) + " m/s");
+      var seconds = "";
+      var minutes = "";
+
+      if(today.getSeconds() < 10){ seconds = "0" + today.getSeconds(); } else { seconds = today.getSeconds(); }
+      if(today.getMinutes() < 10){ minutes = "0" + today.getMinutes(); } else { minutes = today.getMinutes(); }
+
+      console.log(clc.bold("Tid: ") + clc.magenta(today.getHours()) + ":" + clc.magenta(minutes) + ":" + clc.magenta(seconds) + " | V: " + clc.magenta(week()) + messages.TAB + clc.bold("Väder: ") + clc.magenta(Data["WeatherData"]["today"][0]["t"]) + " °C | " + clc.magenta(Data["WeatherData"]["today"][0]["ws"]) + " m/s");
       console.log(clc.green("------------------------------------------------------------"));
 
       // Body
