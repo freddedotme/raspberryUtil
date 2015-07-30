@@ -1,5 +1,6 @@
 // ---------------------------
 // Credit to Albin, @alphahweu, for help
+// Current API's: Skanetrafiken, SMHI, Fixer.io
 
 // ---------------------------
 // INIT / GLOBAL
@@ -46,7 +47,7 @@
 
       console.log(messages.FETCHING);
       return getWeather(weatherCoords);
-      
+
     }).then(function() { return getCurrency(currencyBases);
     }).catch(function() { console.log(messages.ERROR);
     }).done(function() {
