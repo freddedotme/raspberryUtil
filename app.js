@@ -12,7 +12,7 @@
       Q = require('q'),
       week = require("current-week-number");
 
-  var interval = 300000, // 10 min fetch
+  var interval = 300000, // 5 min fetch
       interval2 = 20000, // 20 sec display
       busID_0 = 83055,
       busID_1 = 83054,
@@ -24,6 +24,7 @@
       currencyBases = ['USD'],
       t_next,
       t_curr,
+      page = 0,
       today = new Date();
 
   var Data = []; // Stores all the stuffz
@@ -38,7 +39,7 @@
 
 // ---------------------------
 // MAIN FUNCTIONS
-// fetchData - fetches from all API's and stores it (10m)
+// fetchData - fetches from all API's and stores it (5m)
 // printData - prints all the data in a nice format (20s)
 
   function fetchData() {
@@ -90,17 +91,37 @@
       console.log(clc.green("------------------------------------------------------------"));
 
       // Body
-      console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_0_t"]));
-      console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_1_t"]));
-      console.log(" " + clc.yellow("-"));
-      console.log(" [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_0_t"]));
-      console.log(" [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_1_t"]));
+      if(page == 0){
+
+        // Practical (transport etc.)
+        console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_0_t"]));
+        console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_1_t"]));
+        console.log(" " + clc.yellow("-"));
+        console.log(" [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_0_t"]));
+        console.log(" [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_1_t"]));
+
+      }else if(page == 1){
+
+        // Social (trends etc.)
+        console.log(" [Social content]");
+
+      }else if(page == 2){
+
+        // Stats (currency, population, pageview etc.)
+        console.log(" [Stats content]");
+
+        page = -1;
+
+      }
+      
 
       // Footer
       console.log(clc.green("------------------------------------------------------------"));
       if(t_diffSecs == 0){ console.log("[Uppdatering -> " + t_diffMins + ":00]"); }
       else if(t_diffSecs < 10){ console.log("[Uppdatering -> " + t_diffMins + ":0" + t_diffSecs + "]"); }
       else{ console.log("[Uppdatering -> " + t_diffMins + ":" + t_diffSecs + "]"); }
+
+      page++;
 
     }
 
@@ -167,8 +188,15 @@
             Bus.bus_1_line = bus_1;
             Bus.bus_0_station = bus_0[0].Towards[0];
             Bus.bus_1_station = "Helsingborg C";
-            Bus.bus_0_t = date_0.getUTCHours() + ":" + date_0.getUTCMinutes();
-            Bus.bus_1_t = date_1.getUTCHours() + ":" + date_1.getUTCMinutes();
+
+            var minutes0 = "";
+            var minutes1 = "";
+
+            if(date_0.getUTCMinutes() < 10){ minutes0 = "0" + date_0.getUTCMinutes(); } else { minutes0 = date_0.getUTCMinutes(); }
+            if(date_1.getUTCMinutes() < 10){ minutes1 = "0" + date_1.getUTCMinutes(); } else { minutes1 = date_1.getUTCMinutes(); }
+
+            Bus.bus_0_t = date_0.getUTCHours() + ":" + minutes0;
+            Bus.bus_1_t = date_1.getUTCHours() + ":" + minutes1;
 
             // Finally store it!
             Data["BusData" + completedRequests] = Bus;
@@ -225,12 +253,15 @@
           for(var i = 0; i < days.length; i++){       
 
             var x = new Date(days[i].validTime);
+            var rain = false;
+
+            if(days[i].pit > 0){ rain = true; }
 
             if(today.getDay() == x.getDay() && today.getHours() <= x.getUTCHours()){
-              current.push({t:days[i].t, T:days[i].validTime, pit:days[i].pit, ws:days[i].ws});
+              current.push({t:days[i].t, T:days[i].validTime, pit:days[i].pit, ws:days[i].ws, rain:rain});
             }
 
-            list.push({t:days[i].t, T:days[i].validTime, pit:days[i].pit, ws:days[i].ws});
+            list.push({t:days[i].t, T:days[i].validTime, pit:days[i].pit, ws:days[i].ws, rain:rain});
 
           }
 
