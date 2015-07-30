@@ -22,6 +22,8 @@
         lon: '12.694512'
       }],
       currencyBases = ['USD'],
+      t_next,
+      t_curr,
       today = new Date();
 
   var Data = []; // Stores all the stuffz
@@ -54,6 +56,9 @@
     }).catch(function() { console.log(messages.ERROR);
     }).done(function() {
 
+      t_curr = new Date();
+      t_next = new Date(t_curr.getTime() + interval);
+
       console.log(messages.DONE);
       printData();
 
@@ -63,13 +68,23 @@
 
   function printData() {
 
+    var T = new Date();
+
+    var t_diffMs = (Math.abs(T-t_next) / 1000);
+    var t_diffMins = Math.floor(t_diffMs / 60) % 60;
+    var t_diffSecs = Math.floor(t_diffMs % 60);
+
     if(!first){
 
       // Clears screen
       console.log(messages.CLEARSCREEN);
       console.log(messages.TIMESTAMP + messages.TAB + clc.bold("Väder: ") + clc.magenta(Data["WeatherData"]["today"][0]["t"]) + " °C | " + clc.magenta(Data["WeatherData"]["today"][0]["ws"]) + " m/s");
 
-      var rain = false;
+      if(t_diffSecs == 0){
+        console.log("[Uppdatering " + clc.blink("-> ") + t_diffMins + "]");
+      }else{
+        console.log("[Uppdatering " + clc.blink("-> ") + t_diffSecs + "]");
+      }
 
     }
 
