@@ -46,15 +46,9 @@
 
       console.log(messages.FETCHING);
       return getWeather(weatherCoords);
-
-    }).then(function() {
-
-      return getCurrency(currencyBases);
-
-    }).catch(function() {
-
-      console.log(messages.ERROR);
-
+      
+    }).then(function() { return getCurrency(currencyBases);
+    }).catch(function() { console.log(messages.ERROR);
     }).done(function() {
 
       console.log(messages.DONE);
