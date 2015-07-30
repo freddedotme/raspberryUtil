@@ -188,12 +188,12 @@ function getWeather(latLonS){
 
         }
 
-        messages.push(clc.bold("Väder"));
-        messages.push("");
-        messages.push(msg_c);
-        messages.push(msg_t);
-        messages.push(msg_r);
-        messages.push("");
+        //messages.push(clc.bold("Väder"));
+        //messages.push("");
+        //messages.push(msg_c);
+        //messages.push(msg_t);
+        //messages.push(msg_r);
+        //messages.push("");
 
         completedRequests++;
 
@@ -219,8 +219,8 @@ function getCurrency(bases) {
   var deferred = Q.defer(),
   completedRequests = 0;
 
-  messages.push(clc.bold("Valuta"));
-  messages.push("");
+  //messages.push(clc.bold("Valuta"));
+  //messages.push("");
 
   for (var baseCounter = 0; baseCounter < bases.length; baseCounter++) {
     var base = bases[baseCounter];
