@@ -87,8 +87,8 @@ function getBuses(stopIDs){
           var date_1 = new Date(bus_1[0].JourneyDateTime);
 
           messages.push("  " + clc.underline(station));
-          messages.push("  [-> " + bus_0[0].Towards + "]: " + date_0.getHours() + ":" + date_0.getMinutes());
-          messages.push("  [-> " + bus_1[0].Towards + "]: " + date_1.getHours() + ":" + date_1.getMinutes());
+          messages.push("  [-> " + bus_0[0].Towards + "]: " + date_0.getUTCHours() + ":" + date_0.getUTCMinutes());
+          messages.push("  [-> " + bus_1[0].Towards + "]: " + date_1.getUTCHours() + ":" + date_1.getUTCMinutes());
           messages.push("");
 
           completedRequests++;
