@@ -81,7 +81,7 @@
 
       // Header
       console.log(messages.TIMESTAMP + messages.TAB + clc.bold("Väder: ") + clc.magenta(Data["WeatherData"]["today"][0]["t"]) + " °C | " + clc.magenta(Data["WeatherData"]["today"][0]["ws"]) + " m/s");
-      console.log(clc.green("-----------------------------------------------------"));
+      console.log(clc.green("------------------------------------------------------------"));
 
       // Bottom
       console.log(clc.green("---------------------------"));
