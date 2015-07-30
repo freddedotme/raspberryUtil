@@ -90,9 +90,11 @@
       console.log(clc.green("------------------------------------------------------------"));
 
       // Body
-      console.log("  [Buss -> " + Data["BusData"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData"]["bus_0_t"]));
-      console.log("  [Buss -> " + Data["BusData"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData"]["bus_1_t"]));
+      console.log("  [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_0_t"]));
+      console.log("  [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_1_t"]));
       console.log("  " + clc.yellow("-"));
+      console.log("  [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_0_t"]));
+      console.log("  [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_1_t"]));
 
       // Footer
       console.log(clc.green("------------------------------------------------------------"));
@@ -159,15 +161,19 @@
             var date_1 = new Date(bus_1[0].JourneyDateTime);
 
             // Put all our data at one place
+
+            Bus.from = station;
             Bus.bus_0_line = bus_0;
             Bus.bus_1_line = bus_1;
             Bus.bus_0_station = bus_0[0].Towards[0];
-            Bus.bus_1_station = bus_1[0].Towards[0];
+            Bus.bus_1_station = "Helsingborg C";
             Bus.bus_0_t = date_0.getUTCHours() + ":" + date_0.getUTCMinutes();
             Bus.bus_1_t = date_1.getUTCHours() + ":" + date_1.getUTCMinutes();
 
             // Finally store it!
-            Data["BusData"] = Bus;
+            Data["BusData" + completedRequests] = Bus;
+
+            Bus = {};
 
             completedRequests++;
 
