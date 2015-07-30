@@ -12,7 +12,7 @@
       Q = require('q'),
       week = require("current-week-number");
 
-  var interval = 600000, // 10 min fetch
+  var interval = 300000, // 10 min fetch
       interval2 = 20000, // 20 sec display
       busID_0 = 83055,
       busID_1 = 83054,
@@ -90,11 +90,11 @@
       console.log(clc.green("------------------------------------------------------------"));
 
       // Body
-      console.log("  [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_0_t"]));
-      console.log("  [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_1_t"]));
-      console.log("  " + clc.yellow("-"));
-      console.log("  [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_0_t"]));
-      console.log("  [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_1_t"]));
+      console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_0_t"]));
+      console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_1_t"]));
+      console.log(" " + clc.yellow("-"));
+      console.log(" [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_0_t"]));
+      console.log(" [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_1_t"]));
 
       // Footer
       console.log(clc.green("------------------------------------------------------------"));
