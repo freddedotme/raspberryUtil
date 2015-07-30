@@ -16,6 +16,7 @@
       interval2 = 20000, // 20 sec display
       busID_0 = 83055,
       busID_1 = 83054,
+      first = true,
       weatherCoords = [{
         lat: '56.046467',
         lon: '12.694512'
@@ -31,7 +32,8 @@
     messages.DONE = "Klart!";
     messages.ERROR = "Ops! Något blev fel!"
     messages.CLEARSCREEN = "\033[2J"; // Tested on Debian
-    messages.TIMESTAMP = clc.bold("Tid: ") + today.getHours() + ":" + today.getMinutes() + " / Vecka: " + week();
+    messages.TIMESTAMP = clc.bold("Tid: ") + today.getHours() + ":" + today.getMinutes() + " | V: " + week();
+    messages.TAB = "\t\t";
 
 // ---------------------------
 // MAIN FUNCTIONS
@@ -61,17 +63,18 @@
 
   function printData() {
 
-    // Clears screen
-    console.log(messages.CLEARSCREEN);
-    console.log(messages.TIMESTAMP);
+    if(!first){
 
-    if(Data === undefined || Data == null){
-      
-    }else{
-      console.log(Data);
+      // Clears screen
+      console.log(messages.CLEARSCREEN);
+      console.log(messages.TIMESTAMP + messages.TAB + clc.bold("Väder: ") + clc.magenta(Data["WeatherData"]["today"][0]["t"]) + " °C | " + clc.magenta(Data["WeatherData"]["today"][0]["ws"]) + " m/s");
+
+      var rain = false;
+
     }
 
-    // Formatting coming soon
+    // Hackish, sorry.
+    if(first){ first = false; }
 
   }
 
@@ -188,11 +191,11 @@
 
             var x = new Date(days[i].validTime);
 
-            if(today.getDay() == x.getDay() && today.getHours() < x.getUTCHours()){
-              current.push({t:days[i].t, T:days[i].validTime, pit:days[i].pit});
+            if(today.getDay() == x.getDay() && today.getHours() <= x.getUTCHours()){
+              current.push({t:days[i].t, T:days[i].validTime, pit:days[i].pit, ws:days[i].ws});
             }
 
-            list.push({t:days[i].t, T:days[i].validTime, pit:days[i].pit});
+            list.push({t:days[i].t, T:days[i].validTime, pit:days[i].pit, ws:days[i].ws});
 
           }
 
@@ -266,25 +269,5 @@
     };
 
     return deferred.promise;
-
-  }
-
-  function viewSpinner(state){
-
-    loader = state;
-
-    if(loader){
-
-      for(var i = 0; i < 2; i++){
-
-        console.log("loading");
-
-        if(i == 1){
-          i = 0;
-        }
-
-      }
-
-    }
 
   }
