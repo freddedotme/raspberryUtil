@@ -81,9 +81,9 @@
       console.log(messages.TIMESTAMP + messages.TAB + clc.bold("Väder: ") + clc.magenta(Data["WeatherData"]["today"][0]["t"]) + " °C | " + clc.magenta(Data["WeatherData"]["today"][0]["ws"]) + " m/s");
 
       if(t_diffSecs == 0){
-        console.log("[Uppdatering " + clc.blink("-> ") + t_diffMins + "]");
+        console.log("[Uppdatering ->" + t_diffMins + "]");
       }else{
-        console.log("[Uppdatering " + clc.blink("-> ") + t_diffSecs + "]");
+        console.log("[Uppdatering ->" + t_diffMins + ":" + t_diffSecs + "]");
       }
 
     }
