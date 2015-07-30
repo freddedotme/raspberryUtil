@@ -91,6 +91,7 @@
 
 // ---------------------------
 // FUNCTIONS
+// Still needs some cleaning, everything above is up to date ^
 
   function getBuses(stopIDs){
 
