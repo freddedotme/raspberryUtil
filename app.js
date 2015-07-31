@@ -17,6 +17,7 @@
       busID_0 = 83055,
       busID_1 = 83054,
       first = true,
+      fetching = false,
       weatherCoords = [{
         lat: '56.046467',
         lon: '12.694512'
@@ -44,12 +45,14 @@
 
   function fetchData() {
 
+    console.log(messages.FETCHING);
+    fetching = true;
+
     // Reset data
     Data = [];
 
     getBuses([busID_0, busID_1]).then(function() {
 
-      console.log(messages.FETCHING);
       return getWeather(weatherCoords);
 
     }).then(function() { return getCurrency(currencyBases);
@@ -60,6 +63,8 @@
       t_next = new Date(t_curr.getTime() + interval);
 
       console.log(messages.DONE);
+      fetching = false;
+
       printData();
 
     });
@@ -68,65 +73,70 @@
 
   function printData() {
 
-    var T = new Date();
-    today = new Date();
+    // Pre-caution
+    setTimeout(function(){ 
 
-    var t_diffMs = (Math.abs(T-t_next) / 1000);
-    var t_diffMins = Math.floor(t_diffMs / 60) % 60;
-    var t_diffSecs = Math.floor(t_diffMs % 60);
+      var T = new Date();
+      today = new Date();
 
-    if(!first){
+      var t_diffMs = (Math.abs(T-t_next) / 1000);
+      var t_diffMins = Math.floor(t_diffMs / 60) % 60;
+      var t_diffSecs = Math.floor(t_diffMs % 60);
 
-      // Clears screen
-      console.log(messages.CLEARSCREEN);
+      if(!first && !fetching){
 
-      // Header
-      var seconds = "";
-      var minutes = "";
+        // Clears screen
+        console.log(messages.CLEARSCREEN);
 
-      if(today.getSeconds() < 10){ seconds = "0" + today.getSeconds(); } else { seconds = today.getSeconds(); }
-      if(today.getMinutes() < 10){ minutes = "0" + today.getMinutes(); } else { minutes = today.getMinutes(); }
+        // Header
+        var seconds = "";
+        var minutes = "";
 
-      console.log(clc.bold("Tid: ") + clc.magenta(today.getHours()) + ":" + clc.magenta(minutes) + ":" + clc.magenta(seconds) + " | V: " + clc.magenta(week()) + messages.TAB + clc.bold("Väder: ") + clc.magenta(Data["WeatherData"]["today"][0]["t"]) + " °C | " + clc.magenta(Data["WeatherData"]["today"][0]["ws"]) + " m/s");
-      console.log(clc.green("------------------------------------------------------------"));
+        if(today.getSeconds() < 10){ seconds = "0" + today.getSeconds(); } else { seconds = today.getSeconds(); }
+        if(today.getMinutes() < 10){ minutes = "0" + today.getMinutes(); } else { minutes = today.getMinutes(); }
 
-      // Body
-      if(page == 0){
+        console.log(clc.bold("Tid: ") + clc.magenta(today.getHours()) + ":" + clc.magenta(minutes) + ":" + clc.magenta(seconds) + " | V: " + clc.magenta(week()) + messages.TAB + clc.bold("Väder: ") + clc.magenta(Data["WeatherData"]["today"][0]["t"]) + " °C | " + clc.magenta(Data["WeatherData"]["today"][0]["ws"]) + " m/s");
+        console.log(clc.green("------------------------------------------------------------"));
 
-        // Practical (transport etc.)
-        console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_0_t"]));
-        console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_1_t"]));
-        console.log(" " + clc.yellow("-"));
-        console.log(" [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_0_t"]));
-        console.log(" [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_1_t"]));
+        // Body
+        if(page == 0){
 
-      }else if(page == 1){
+          // Practical (transport etc.)
+          console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_0_t"]));
+          console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_1_t"]));
+          console.log(" " + clc.yellow("-"));
+          console.log(" [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_0_t"]));
+          console.log(" [" + Data["BusData1"]["from"] + " -> " + Data["BusData1"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData1"]["bus_1_t"]));
 
-        // Social (trends etc.)
-        console.log(" [Social content]");
+        }else if(page == 1){
 
-      }else if(page == 2){
+          // Social (trends etc.)
+          console.log(" [Social content]");
 
-        // Stats (currency, population, pageview etc.)
-        console.log(" [Stats content]");
+        }else if(page == 2){
 
-        page = -1;
+          // Stats (currency, population, pageview etc.)
+          console.log(" [Stats content]");
+
+          page = -1;
+
+        }
+        
+
+        // Footer
+        console.log(clc.green("------------------------------------------------------------"));
+        if(t_diffSecs == 0){ console.log("[Uppdatering -> " + t_diffMins + ":00]"); }
+        else if(t_diffSecs < 10){ console.log("[Uppdatering -> " + t_diffMins + ":0" + t_diffSecs + "]"); }
+        else{ console.log("[Uppdatering -> " + t_diffMins + ":" + t_diffSecs + "]"); }
+
+        page++;
 
       }
-      
 
-      // Footer
-      console.log(clc.green("------------------------------------------------------------"));
-      if(t_diffSecs == 0){ console.log("[Uppdatering -> " + t_diffMins + ":00]"); }
-      else if(t_diffSecs < 10){ console.log("[Uppdatering -> " + t_diffMins + ":0" + t_diffSecs + "]"); }
-      else{ console.log("[Uppdatering -> " + t_diffMins + ":" + t_diffSecs + "]"); }
+      // Hackish, sorry.
+      if(first){ first = false; }
 
-      page++;
-
-    }
-
-    // Hackish, sorry.
-    if(first){ first = false; }
+    }, 2000);
 
   }
 
@@ -182,7 +192,6 @@
             var date_1 = new Date(bus_1[0].JourneyDateTime);
 
             // Put all our data at one place
-
             Bus.from = station;
             Bus.bus_0_line = bus_0;
             Bus.bus_1_line = bus_1;
