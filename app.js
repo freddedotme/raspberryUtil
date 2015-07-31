@@ -112,7 +112,11 @@
           var namedays = "";
 
           for(var i = 0; i < Data["DayData"].namedays.length; i++){
-            namedays += Data["DayData"].namedays[i] + " ";
+            if(i == Data["DayData"].namedays.length - 1){
+              namedays += Data["DayData"].namedays[i];
+            }else{
+              namedays += Data["DayData"].namedays[i] + ", ";
+            }
           }
 
           console.log(" Namnsdag: " + namedays);
@@ -169,9 +173,12 @@
 
         // Footer
         console.log(clc.green("------------------------------------------------------------"));
-        if(t_diffSecs == 0){ console.log("[Uppdatering -> " + t_diffMins + ":00]"); }
-        else if(t_diffSecs < 10){ console.log("[Uppdatering -> " + t_diffMins + ":0" + t_diffSecs + "]"); }
-        else{ console.log("[Uppdatering -> " + t_diffMins + ":" + t_diffSecs + "]\t\t\t\t\t " + (page+1) + "/3"); }
+
+        var paginator = "\t\t\t\t\t " + (page+1) + "/3";
+
+        if(t_diffSecs == 0){ console.log("[Uppdatering -> " + t_diffMins + ":00]" + paginator); }
+        else if(t_diffSecs < 10){ console.log("[Uppdatering -> " + t_diffMins + ":0" + t_diffSecs + "]" + paginator); }
+        else{ console.log("[Uppdatering -> " + t_diffMins + ":" + t_diffSecs + "]" + paginator); }
 
         if(page < 2){ page++; }else{ page = 0; }
 
