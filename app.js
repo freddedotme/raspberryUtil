@@ -1,6 +1,6 @@
 // ---------------------------
 // Credit to Albin, @alphahweu, for help
-// Current API's: Skanetrafiken, SMHI, Fixer.io
+// Current API's: Skanetrafiken, SMHI, Fixer.io, api.dryg.net
 
 // ---------------------------
 // INIT / GLOBAL
@@ -13,7 +13,7 @@
       week = require("current-week-number");
 
   var interval = 300000, // 5 min fetch
-      interval2 = 10000, // 10 sec display
+      interval2 = 15000, // 15 sec display
       busID_0 = 83055,
       busID_1 = 83054,
       first = true,
@@ -41,7 +41,7 @@
 // ---------------------------
 // MAIN FUNCTIONS
 // fetchData - fetches from all API's and stores it (5m)
-// printData - prints all the data in a nice format (10s)
+// printData - prints all the data in a nice format (15s)
 
   function fetchData() {
 
@@ -56,6 +56,7 @@
       return getWeather(weatherCoords);
 
     }).then(function() { return getCurrency(currencyBases);
+    }).then(function() { return getDayInfo(today);
     }).catch(function() { console.log(messages.ERROR);
     }).done(function() {
 
@@ -102,6 +103,22 @@
         if(page == 0){
 
           // Practical (transport etc.)
+          if(Data["DayData"].free){ 
+            console.log(" " + clc.bold(Data["DayData"]["day"]) + " - Röd dag");
+          }else{
+            console.log(" " + clc.bold(Data["DayData"]["day"]));
+          }
+
+          var namedays = "";
+
+          for(var i = 0; i < Data["DayData"].namedays.length; i++){
+            namedays += Data["DayData"].namedays[i] + " ";
+          }
+
+          console.log(" Namnsdag: " + namedays);
+
+          console.log(" " + clc.yellow("-"));
+
           var weather_time = "";
           var weather_temp = "";
 
@@ -128,7 +145,9 @@
 
           console.log(" T: " + weather_time);
           console.log(" C: " + weather_temp);
+
           console.log(" " + clc.yellow("-"));
+
           console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_0_t"]));
           console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_1_t"]));
           console.log(" " + clc.yellow("-"));
@@ -320,6 +339,53 @@
       });
 
     };
+
+    return deferred.promise;
+
+  }
+
+  function getDayInfo(d){
+
+    var Day = {};
+
+    var deferred = Q.defer(),
+    completedRequests = 0;
+
+    var month = "";
+    var date = "";
+
+    if((d.getMonth() + 1) < 10){ month = "0" + (d.getMonth() + 1); }else{ month = (d.getMonth() + 1); }
+    if(d.getDate() < 10){ date = "0" + d.getDate(); }else{ date = d.getDate(); }
+
+    http.get("http://api.dryg.net/dagar/v2.1/" + d.getFullYear() + "/" + month + "/" + date, function(res) {
+
+      var buffer = "";
+
+      res.on("data", function (chunk) {
+        buffer += chunk; 
+      });
+
+      res.on("end", function (e) {
+
+        var day = JSON.parse(buffer);
+
+        // Put all our data at one place
+        if(day.dagar[0]["arbetsfri dag"] == "Ja"){ Day.free = true; }else{ Day.free = false; }
+        if(day.dagar[0]["röd dag"] == "Ja"){ Day.red = true; }else{ Day.red = false; }
+        Day.namedays = day.dagar[0].namnsdag;
+        Day.day = day.dagar[0].veckodag;
+
+        // Finally store it!
+        Data["DayData"] = Day;
+
+        deferred.resolve();
+
+      });
+
+    }).on("error", function(e) {
+      console.log("Got error: " + e.message);
+      deferred.reject();
+    });
 
     return deferred.promise;
 
