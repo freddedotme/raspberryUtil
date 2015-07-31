@@ -13,7 +13,7 @@
       week = require("current-week-number");
 
   var interval = 300000, // 5 min fetch
-      interval2 = 20000, // 20 sec display
+      interval2 = 10000, // 10 sec display
       busID_0 = 83055,
       busID_1 = 83054,
       first = true,
@@ -41,7 +41,7 @@
 // ---------------------------
 // MAIN FUNCTIONS
 // fetchData - fetches from all API's and stores it (5m)
-// printData - prints all the data in a nice format (20s)
+// printData - prints all the data in a nice format (10s)
 
   function fetchData() {
 
@@ -102,6 +102,33 @@
         if(page == 0){
 
           // Practical (transport etc.)
+          var weather_time = "";
+          var weather_temp = "";
+
+          for(var i = 0; i < Data["WeatherData"]["today"].length; i++){
+
+            var weather_date = new Date(Data["WeatherData"]["today"][i].T);
+
+            weather_time += weather_date.getUTCHours() + ":00 | ";
+            weather_t = Data["WeatherData"]["today"][i].t.toFixed(1);
+
+            if(weather_t > 20){ weather_t = clc.red(weather_t); }
+            else if(weather_t > 15){ weather_t = clc.yellow(weather_t); }
+            else if(weather_t > 10){ weather_t = clc.green(weather_t); }
+            else if(weather_t > 0){ weather_t = clc.cyan(weather_t); }
+            else if(weather_t <= 0){ weather_t = clc.white(weather_t); }
+
+            if(Data["WeatherData"]["today"][i].rain){ weather_t = clc.blue(weather_t); }
+
+            weather_temp += weather_t + "  | ";
+
+            if(i == 6){ break; } // Too wide otherwise :/
+
+          }
+
+          console.log(" T: " + weather_time);
+          console.log(" C: " + weather_temp);
+          console.log(" " + clc.yellow("-"));
           console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_0_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_0_t"]));
           console.log(" [" + Data["BusData0"]["from"] + " -> " + Data["BusData0"]["bus_1_station"]  + "]: " + clc.cyan(Data["BusData0"]["bus_1_t"]));
           console.log(" " + clc.yellow("-"));
@@ -118,8 +145,6 @@
           // Stats (currency, population, pageview etc.)
           console.log(" [Stats content]");
 
-          page = -1;
-
         }
         
 
@@ -127,9 +152,9 @@
         console.log(clc.green("------------------------------------------------------------"));
         if(t_diffSecs == 0){ console.log("[Uppdatering -> " + t_diffMins + ":00]"); }
         else if(t_diffSecs < 10){ console.log("[Uppdatering -> " + t_diffMins + ":0" + t_diffSecs + "]"); }
-        else{ console.log("[Uppdatering -> " + t_diffMins + ":" + t_diffSecs + "]"); }
+        else{ console.log("[Uppdatering -> " + t_diffMins + ":" + t_diffSecs + "]\t\t\t\t\t " + (page+1) + "/3"); }
 
-        page++;
+        if(page < 2){ page++; }else{ page = 0; }
 
       }
 
